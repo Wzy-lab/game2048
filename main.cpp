@@ -4,30 +4,37 @@
 #include<windows.h>
 #include<string>
 #include<fstream>
+#include <stack>
 using namespace std;
+//贾泽源，王振宇
 class g2048
 {
 private:
 	const string rankURL = "./phb.txt";
 	const static int BoardSize = 4;
 	const static int RankSize = 10;
+	const static int maxNumLen = 4;
+
 	int board[BoardSize][BoardSize] = { 0 };
 	int boardCopy[BoardSize][BoardSize] = { 0 };
+	int temp[4];
 	int score = 0;//得分
 	int maxNum = 2;
-	int maxNumLen = 4;
-	bool isEliminated = false;//上一步是否有消除
-	bool isMoved = false;//上一步是否有移动
-	int eliminationLevel = 0;//连续消除等级，影响新生成的数字和分数
+	int eliminationLevel = 0;//连续消除等级，影响新生成的数字和分数	
 	int zeroNum = BoardSize * BoardSize;//空位数量
+
 	int ranking_list[RankSize] = { 0 };//排行榜
 	int rank_len = 0;//实际排行榜长度
 
-	//四个移动合并操作
+	bool isEliminated = false;//上一步是否有消除
+	bool isMoved = false;//上一步是否有移动
+	bool allowback = false;//能否回退的标志变量
+
 	void up();
 	void down();
 	void left();
 	void right();
+
 public:
 	bool isPlaying = false;
 	g2048();
@@ -36,63 +43,30 @@ public:
 	void showBoard();//展示棋盘
 	bool input();
 	bool isChanged();//判断棋盘的变化，产生变化返回true，否则返回false
+	bool setalback(bool newAlb) { return (allowback = newAlb); }
 	//bool gameoverCheck();//游戏结束检查，1、未产生新的方块 2、无法合并
 	bool movable();
-	void resetAll(int bdSize, int rkSize);//重设size
 	void resetMark();//每一次显示结束后重置标志位
 	void cleanBoard();//清空面板
-
-	//返回游戏结果
+	void goback();
+	void copy();
 	int getScore() { return score; }
 	int get_maxNum() { return maxNum; }
 	void readranking();
 	void showranking();
 	void writeranking();
 };
-
+//梁耀文
 class play
 {
 private:
-	g2048 game;
+	g2048 game;//对象成员
 public:
-	//play() { }
-	void playGame()
-	{
-		game.cleanBoard();
-		game.isPlaying = true;
-		while (game.isPlaying)
-		{
-			system("cls");
-			game.showBoard();
-			game.resetMark();//重置两个标志位
-			if (game.input() && game.isChanged())
-			{
-				game.nextNum();//产生一个新的方块
-				if (!game.movable())
-				{
-					game.isPlaying = false;
-				}
-			}
-		}
-		system("cls");
-		game.showBoard();
-		cout << "GAME OVER ! ! !" << endl;
-		game.writeranking();
-	}
-	void showRank() {
-		game.showranking();
-	}
-	void gameMenu()
-	{
-		system("cls");
-		cout << "+-------------+" << endl;
-		cout << "| 1、开始游戏 |" << endl;
-		cout << "| 2、排行榜   |" << endl;
-		cout << "| 3、退出游戏 |" << endl;
-		cout << "+-------------+" << endl;
-	}
+	void playGame();
+	void showRank() { game.showranking(); }
+	void gameMenu();
 };
-
+//主函数--梁耀文
 int main()
 {
 	cout << "=====================" << endl;
@@ -108,10 +82,6 @@ int main()
 	while (1)
 	{
 		GAME.gameMenu();
-		//while (getchar() != 0);
-
-		//scanf_s("%c", &choice);
-
 		cin >> choice;
 		if (choice.length() == 1)
 			switch (choice[0])
@@ -140,7 +110,13 @@ int main()
 	}
 	return 0;
 }
-//读取排行榜
+//构造函数--读取排行榜文件 王振宇
+g2048::g2048()
+{
+	readranking();
+
+}
+//读取排行榜--王振宇
 void g2048::readranking()
 {
 	ifstream ifile(rankURL);
@@ -167,7 +143,7 @@ void g2048::readranking()
 	}
 	ifile.close();
 }
-//显示排行榜
+//显示排行榜--王振宇
 void g2048::showranking()
 {
 	system("cls");
@@ -177,7 +153,7 @@ void g2048::showranking()
 		printf("第%d名：%d\n", i + 1, ranking_list[i]);
 	}
 }
-//写入排行榜
+//写入排行榜--王振宇
 void g2048::writeranking()
 {
 	if (score == 0)
@@ -224,16 +200,11 @@ void g2048::writeranking()
 	ofile << ranking_list[rank_len - 1];
 	ofile.close();
 }
-//滑动
+//向上滑动--贾泽源
 void g2048::up()
 {
-	for (int i = 0; i < BoardSize; i++)
-		for (int j = 0; j < BoardSize; j++)
-			boardCopy[i][j] = board[i][j];
-
-	//isEliminated = false;
-	//isMoved = false;
-//消除
+	copy();
+	//消除
 	for (int j = 0; j < BoardSize; j++)
 		for (int i = 0; i < BoardSize - 1; i++)
 		{
@@ -285,14 +256,10 @@ void g2048::up()
 		eliminationLevel = 0;
 	}
 }
+//向下滑动--贾泽源
 void g2048::down()
 {
-	for (int i = 0; i < BoardSize; i++)
-		for (int j = 0; j < BoardSize; j++)
-			boardCopy[i][j] = board[i][j];
-
-	//isEliminated = false;
-	//isMoved = false;
+	copy();
 	//消除
 	for (int j = 0; j < BoardSize; j++)
 		for (int i = BoardSize - 1; i > 0; i--)
@@ -345,14 +312,10 @@ void g2048::down()
 		eliminationLevel = 0;
 	}
 }
+//向左滑动--贾泽源
 void g2048::left()
 {
-	for (int i = 0; i < BoardSize; i++)
-		for (int j = 0; j < BoardSize; j++)
-			boardCopy[i][j] = board[i][j];
-
-	//isEliminated = false;
-	//isMoved = false;
+	copy();
 	//消除
 	for (int i = 0; i < BoardSize; i++)
 		for (int j = 0; j < BoardSize - 1; j++)
@@ -405,14 +368,10 @@ void g2048::left()
 		eliminationLevel = 0;
 	}
 }
+//向右滑动--贾泽源
 void g2048::right()
 {
-	for (int i = 0; i < BoardSize; i++)
-		for (int j = 0; j < BoardSize; j++)
-			boardCopy[i][j] = board[i][j];
-
-	//isEliminated = false;
-	//isMoved = false;
+	copy();
 	//消除
 	for (int i = 0; i < BoardSize; i++)
 		for (int j = BoardSize - 1; j > 0; j--)
@@ -465,11 +424,38 @@ void g2048::right()
 		eliminationLevel = 0;
 	}
 }
+//拷贝棋盘
+void g2048::copy()
+{
+	for (int i = 0; i < BoardSize; i++)
+		for (int j = 0; j < BoardSize; j++)
+			boardCopy[i][j] = board[i][j];
+	temp[0] = score;
+	temp[1] = maxNum;
+	temp[2] = eliminationLevel;
+	temp[3] = zeroNum;
+}
+
+//回退操作
+void g2048::goback()
+{
+	if (!allowback)
+		return;
+	for (int i = 0; i < BoardSize; i++)
+		for (int j = 0; j < BoardSize; j++)
+			board[i][j] = boardCopy[i][j];
+	score = temp[0];
+	maxNum = temp[1];
+	eliminationLevel = temp[2];
+	zeroNum = temp[3];
+}
+//重置标识位--贾泽源
 void g2048::resetMark()
 {
 	isEliminated = false;//无消除
 	isMoved = false;//无移动
 }
+//棋盘可移动检查--王振宇
 bool g2048::movable()
 {
 	if (zeroNum > 0)
@@ -486,10 +472,12 @@ bool g2048::movable()
 	}
 	return false;
 }
+//棋盘改动检查--贾泽源
 bool g2048::isChanged()
 {
 	return (isEliminated || isMoved);
 }
+//显示当前棋盘--贾泽源
 void g2048::showBoard()
 {
 	cout << '+';
@@ -530,7 +518,9 @@ void g2048::showBoard()
 	cout << "zeroNum:" << zeroNum << endl;
 	cout << "maxNum:" << maxNum << endl;
 	cout << "score:" << score << endl;
+	cout << "allowback:" << allowback << endl;
 }
+//随机空位产生新的方块--王振宇
 bool g2048::nextNum()
 {
 	int rdmnum = 0, row = 0;
@@ -551,9 +541,17 @@ bool g2048::nextNum()
 		{
 			if (board[i][j] == 0)
 			{
-				if (!rdmnum)
+				if (rdmnum == 0)
 				{
-					board[i][j] = 2;
+					if (eliminationLevel >= 3)
+					{
+						board[i][i] = 4;
+						eliminationLevel = 0;
+					}
+					else
+					{
+						board[i][j] = 2;
+					}
 					return true;
 				}
 				rdmnum--;
@@ -561,6 +559,7 @@ bool g2048::nextNum()
 		}
 	}
 }
+//游戏中指令的控制--王振宇
 bool g2048::input()
 {
 	string ss;
@@ -583,6 +582,9 @@ bool g2048::input()
 		case 'D':
 			right();
 			return true;
+		case 'B':
+			goback();
+			return false;
 		case 'E':
 			isPlaying = false;
 			return false;
@@ -591,15 +593,14 @@ bool g2048::input()
 			isPlaying = true;
 			return false;
 		default:
+			cout << "ERROR" << endl;
+			system("pause");
 			break;
 		}
 	}
-	else if (len > 1)
-	{
-
-	}
 	return false;
 }
+//棋盘清理--贾泽源
 void g2048::cleanBoard()
 {
 	for (int i = 0; i < BoardSize; i++)
@@ -616,11 +617,44 @@ void g2048::cleanBoard()
 	resetMark();
 	zeroNum = BoardSize * BoardSize;
 	isPlaying = false;
+	allowback = false;
 
 	nextNum();
 	nextNum();
+	copy();
 }
-g2048::g2048()
+//游戏菜单显示--梁耀文
+void play::gameMenu()
 {
-	readranking();
+	system("cls");
+	cout << "+-------------+" << endl;
+	cout << "| 1、开始游戏 |" << endl;
+	cout << "| 2、排行榜   |" << endl;
+	cout << "| 3、退出游戏 |" << endl;
+	cout << "+-------------+" << endl;
+}
+//控制整个游戏的过程--梁耀文
+void play::playGame()
+{
+	game.cleanBoard();
+	game.isPlaying = true;
+	while (game.isPlaying)
+	{
+		system("cls");
+		game.showBoard();
+		//game.copy();
+		game.resetMark();//重置两个标志位
+		if (game.input() && game.setalback(game.isChanged()))
+		{
+			game.nextNum();//产生一个新的方块
+			if (!game.movable())
+			{
+				game.isPlaying = false;
+			}
+		}
+	}
+	system("cls");
+	game.showBoard();
+	cout << "GAME OVER ! ! !" << endl;
+	game.writeranking();
 }
