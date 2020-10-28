@@ -5,43 +5,24 @@
 #include<string>
 #include<fstream>
 using namespace std;
-void loading(int time)
-{
-	char a[] = { '|' , '/' ,'-','\\' };
-	int i = time * 2, k;
-	while (i--)
-	{
-		k = i % 4;
-		cout << '\b' << a[k];
-		Sleep(500);
-	}
-	cout << '\b' << "success!" << endl;
-}
-
 class g2048
 {
 private:
-	const char* rankURL = "./phb.txt";
-	const static int defaultBoardSize = 4;
-	const static int defaultRankSize = 10;
-	int BoardSize;
-	int RankSize;
-	//int board[BoardSize][BoardSize] = { 0 };
-	//int boardCopy[BoardSize][BoardSize] = { 0 };
-	int** board = NULL;
-	int** boardCopy = NULL;
+	const string rankURL = "./phb.txt";
+	const static int BoardSize = 4;
+	const static int RankSize = 10;
+	int board[BoardSize][BoardSize] = { 0 };
+	int boardCopy[BoardSize][BoardSize] = { 0 };
 	int score = 0;//得分
 	int maxNum = 2;
 	int maxNumLen = 4;
 	bool isEliminated = false;//上一步是否有消除
 	bool isMoved = false;//上一步是否有移动
 	int eliminationLevel = 0;//连续消除等级，影响新生成的数字和分数
-	int zeroNum;//空位数量
-	int* ranking_list = NULL;//排行榜
+	int zeroNum = BoardSize * BoardSize;//空位数量
+	int ranking_list[RankSize] = { 0 };//排行榜
 	int rank_len = 0;//实际排行榜长度
 
-	void initBoard();
-	void initRank();
 	//四个移动合并操作
 	void up();
 	void down();
@@ -49,9 +30,7 @@ private:
 	void right();
 public:
 	bool isPlaying = false;
-	void init();
 	g2048();
-	g2048(int bdSize, int rkSize);
 	bool nextNum();//在随机坐标产生一个2或4，需要用到eliminationLevel 与 zeroNum,无法产生下一个数则判定失败
 	//当棋盘发生改变才可以产生新的数
 	void showBoard();//展示棋盘
@@ -74,144 +53,91 @@ public:
 class play
 {
 private:
-	const static int maxBoardSize = 10;
-	const static int minBoardSize = 3;
-	const static int maxRankSize = 20;
-	const static int minRankSize = 5;
-	int BoardSize = 3;
-	int RankSize = 10;
-	g2048* game = NULL;
+	g2048 game;
 public:
-	play() {
-		initGame();
-		gameMenu();
-	}
-	void initGame()
-	{
-		if (game)
-			free(game);
-		game = new g2048(BoardSize, RankSize);
-	}
+	//play() { }
 	void playGame()
 	{
-		if (game == NULL)
-		{
-			cout << "游戏异常 ! " << endl;
-			return;
-		}
-
-		game->cleanBoard();
-		game->isPlaying = true;
-		while (game->isPlaying)
+		game.cleanBoard();
+		game.isPlaying = true;
+		while (game.isPlaying)
 		{
 			system("cls");
-			game->showBoard();
-			game->resetMark();
-			if (game->input() && game->isChanged())
+			game.showBoard();
+			game.resetMark();//重置两个标志位
+			if (game.input() && game.isChanged())
 			{
-				game->nextNum();
-				if (!game->movable())
+				game.nextNum();//产生一个新的方块
+				if (!game.movable())
 				{
-					game->isPlaying = false;
+					game.isPlaying = false;
 				}
 			}
 		}
 		system("cls");
-		game->showBoard();
+		game.showBoard();
 		cout << "GAME OVER ! ! !" << endl;
-		game->writeranking();
+		game.writeranking();
 	}
 	void showRank() {
-		game->showranking();
-	}
-	void setting()
-	{
-		int choice;
-		while (1)
-		{
-			system("cls");
-			printf("棋盘大小 : %d\n排行榜大小 : %d\n", BoardSize, RankSize);
-			cout << "请选择需要设置的参数：" << endl;
-			cout << "1、棋盘大小" << endl;
-			cout << "2、排行榜大小" << endl;
-			cout << "3、保存并退回主菜单" << endl;
-			cin >> choice;
-			switch (choice)
-			{
-			case 1:
-				printf("请输入一个合适的棋盘大小(%d~%d) : ", minBoardSize, maxBoardSize);
-				cin >> choice;
-				if (choice >= minBoardSize && choice <= maxBoardSize)
-				{
-					BoardSize = choice;
-					cout << "修改成功 ！" << endl;
-				}
-				else
-				{
-					cout << "修改失败 ！" << endl;
-				}
-				break;
-			case 2:
-				printf("请输入一个合适的排行榜大小(%d~%d) : ", minRankSize, maxRankSize);
-				cin >> choice;
-				if (choice >= minRankSize && choice <= maxRankSize)
-				{
-					RankSize = choice;
-					cout << "修改成功 ！" << endl;
-				}
-				else
-				{
-					cout << "修改失败 ！" << endl;
-				}
-				break;
-			case 3:
-				game->resetAll(BoardSize, RankSize);
-				return;
-			default:
-				cout << "输入格式错误 ! " << endl;
-				break;
-			}
-			system("pause");
-		}
+		game.showranking();
 	}
 	void gameMenu()
 	{
-		int choice;
-		while (1)
-		{
-			system("cls");
-			cout << "1、开始游戏(b)" << endl;
-			cout << "2、排行榜(r)" << endl;
-			cout << "3、设置(s)" << endl;
-			cout << "4、退出游戏(e)" << endl;
-			cin >> choice;
-			switch (choice)
-			{
-			case 1:
-				playGame();
-				system("pause");
-				break;
-			case 2:
-				showRank();
-				system("pause");
-				break;
-			case 3:
-				setting();
-				break;
-			case 4:
-				return;
-				break;
-			default:
-				break;
-			}
-		}
+		system("cls");
+		cout << "+-------------+" << endl;
+		cout << "| 1、开始游戏 |" << endl;
+		cout << "| 2、排行榜   |" << endl;
+		cout << "| 3、退出游戏 |" << endl;
+		cout << "+-------------+" << endl;
 	}
 };
 
 int main()
 {
-	loading(3);
-	play hhh;
+	cout << "=====================" << endl;
+	cout << " **** **** *  * **** " << endl;
+	cout << "    * *  * *  * *  * " << endl;
+	cout << " **** *  * **** **** " << endl;
+	cout << " *    *  *    * *  * " << endl;
+	cout << " **** ****    * **** " << endl;
+	cout << "=====================" << endl;
+	system("pause");
+	play GAME;
+	string choice;//存放选择结果
+	while (1)
+	{
+		GAME.gameMenu();
+		//while (getchar() != 0);
+
+		//scanf_s("%c", &choice);
+
+		cin >> choice;
+		if (choice.length() == 1)
+			switch (choice[0])
+			{
+			case '1':
+				GAME.playGame();
+				system("pause");
+				break;
+			case '2':
+				GAME.showRank();//显示排行榜
+				system("pause");
+				break;
+			case '3':
+				return 0;
+				break;
+			default:
+				cout << "ERROR!" << endl;
+				system("pause");
+				break;
+			}
+		else
+		{
+			cout << "ERROR!" << endl;
+			system("pause");
+		}
+	}
 	return 0;
 }
 //读取排行榜
@@ -539,26 +465,10 @@ void g2048::right()
 		eliminationLevel = 0;
 	}
 }
-void g2048::resetAll(int bdSize, int rkSize)
-{
-	if (BoardSize != bdSize)
-	{
-		free(board); free(boardCopy);
-		BoardSize = bdSize;
-		initBoard();
-	}
-	if (RankSize != rkSize)
-	{
-		free(ranking_list);
-		RankSize = rkSize;
-		initRank();
-		readranking();
-	}
-}
 void g2048::resetMark()
 {
-	isEliminated = false;
-	isMoved = false;
+	isEliminated = false;//无消除
+	isMoved = false;//无移动
 }
 bool g2048::movable()
 {
@@ -710,44 +620,7 @@ void g2048::cleanBoard()
 	nextNum();
 	nextNum();
 }
-void g2048::initBoard()
-{
-	board = new int* [BoardSize];
-	boardCopy = new int* [BoardSize];
-	for (int i = 0; i < BoardSize; i++)
-	{
-		board[i] = new int[BoardSize];
-		boardCopy[i] = new int[BoardSize];
-		for (int j = 0; j < BoardSize; j++)
-		{
-			board[i][j] = 0;
-			boardCopy[i][j] = 0;
-		}
-	}
-	zeroNum = BoardSize * BoardSize;
-}
-void g2048::initRank()
-{
-	ranking_list = new int[RankSize];
-	for (int i = 0; i < RankSize; i++)
-		ranking_list[i] = 0;
-}
-void g2048::init()
-{
-	initBoard();
-	initRank();
-}
 g2048::g2048()
 {
-	BoardSize = defaultBoardSize;
-	RankSize = defaultRankSize;
-	init();
-	readranking();
-}
-g2048::g2048(int bdSize, int rkSize)
-{
-	BoardSize = bdSize;
-	RankSize = rkSize;
-	init();
 	readranking();
 }
