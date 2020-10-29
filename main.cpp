@@ -6,7 +6,7 @@
 #include<fstream>
 #include <stack>
 using namespace std;
-//¼ÖÔóÔ´£¬ÍõÕñÓî
+//è´¾æ³½æºï¼Œç‹æŒ¯å®‡
 class g2048
 {
 private:
@@ -20,18 +20,17 @@ private:
 	int boardCopyNow[BoardSize][BoardSize] = { 0 };
 	int tempNow[4];
 	int tempPast[4];
-	int score = 0;//µÃ·Ö
+	int score = 0;//å¾—åˆ†
 	int maxNum = 2;
-	int eliminationLevel = 0;//Á¬ĞøÏû³ıµÈ¼¶£¬Ó°ÏìĞÂÉú³ÉµÄÊı×ÖºÍ·ÖÊı	
-	int zeroNum = BoardSize * BoardSize;//¿ÕÎ»ÊıÁ¿
+	int eliminationLevel = 0;//è¿ç»­æ¶ˆé™¤ç­‰çº§ï¼Œå½±å“æ–°ç”Ÿæˆçš„æ•°å­—å’Œåˆ†æ•°	
+	int zeroNum = BoardSize * BoardSize;//ç©ºä½æ•°é‡
 
-	int ranking_list[RankSize] = { 0 };//ÅÅĞĞ°ñ
-	int rank_len = 0;//Êµ¼ÊÅÅĞĞ°ñ³¤¶È
+	int ranking_list[RankSize] = { 0 };//æ’è¡Œæ¦œ
+	int rank_len = 0;//å®é™…æ’è¡Œæ¦œé•¿åº¦
 
-	bool isEliminated = false;//ÉÏÒ»²½ÊÇ·ñÓĞÏû³ı
-	bool isMoved = false;//ÉÏÒ»²½ÊÇ·ñÓĞÒÆ¶¯
-	//bool allowback = false;//ÄÜ·ñ»ØÍËµÄ±êÖ¾±äÁ¿
-
+	bool isEliminated = false;//ä¸Šä¸€æ­¥æ˜¯å¦æœ‰æ¶ˆé™¤
+	bool isMoved = false;//ä¸Šä¸€æ­¥æ˜¯å¦æœ‰ç§»åŠ¨
+	//bool allowback = false;//èƒ½å¦å›é€€çš„æ ‡å¿—å˜é‡
 	void up();
 	void down();
 	void left();
@@ -39,16 +38,16 @@ private:
 
 public:
 	g2048();
-	bool nextNum();//ÔÚËæ»ú×ø±ê²úÉúÒ»¸ö2»ò4£¬ĞèÒªÓÃµ½eliminationLevel Óë zeroNum,ÎŞ·¨²úÉúÏÂÒ»¸öÊıÔòÅĞ¶¨Ê§°Ü
-	//µ±ÆåÅÌ·¢Éú¸Ä±ä²Å¿ÉÒÔ²úÉúĞÂµÄÊı
-	void showBoard();//Õ¹Ê¾ÆåÅÌ
+	bool nextNum();//åœ¨éšæœºåæ ‡äº§ç”Ÿä¸€ä¸ª2æˆ–4ï¼Œéœ€è¦ç”¨åˆ°eliminationLevel ä¸ zeroNum,æ— æ³•äº§ç”Ÿä¸‹ä¸€ä¸ªæ•°åˆ™åˆ¤å®šå¤±è´¥
+	//å½“æ£‹ç›˜å‘ç”Ÿæ”¹å˜æ‰å¯ä»¥äº§ç”Ÿæ–°çš„æ•°
+	void showBoard();//å±•ç¤ºæ£‹ç›˜
 	bool input();
-	bool isChanged();//ÅĞ¶ÏÆåÅÌµÄ±ä»¯£¬²úÉú±ä»¯·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	bool isChanged();//åˆ¤æ–­æ£‹ç›˜çš„å˜åŒ–ï¼Œäº§ç”Ÿå˜åŒ–è¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	//bool setalback(bool newAlb) { return (allowback= newAlb); }
-	//bool gameoverCheck();//ÓÎÏ·½áÊø¼ì²é£¬1¡¢Î´²úÉúĞÂµÄ·½¿é 2¡¢ÎŞ·¨ºÏ²¢
+	//bool gameoverCheck();//æ¸¸æˆç»“æŸæ£€æŸ¥ï¼Œ1ã€æœªäº§ç”Ÿæ–°çš„æ–¹å— 2ã€æ— æ³•åˆå¹¶
 	bool movable();
-	void resetMark();//Ã¿Ò»´ÎÏÔÊ¾½áÊøºóÖØÖÃ±êÖ¾Î»
-	void cleanBoard();//Çå¿ÕÃæ°å
+	void resetMark();//æ¯ä¸€æ¬¡æ˜¾ç¤ºç»“æŸåé‡ç½®æ ‡å¿—ä½
+	void cleanBoard();//æ¸…ç©ºé¢æ¿
 	void goback();
 	void copy();
 	int getScore() { return score; }
@@ -57,17 +56,17 @@ public:
 	void showranking();
 	void writeranking();
 };
-//ÁºÒ«ÎÄ
+//æ¢è€€æ–‡
 class play
 {
 private:
-	g2048 game;//¶ÔÏó³ÉÔ±
+	g2048 game;//å¯¹è±¡æˆå‘˜
 public:
 	void playGame();
 	void showRank() { game.showranking(); }
 	void gameMenu();
 };
-//Ö÷º¯Êı--ÁºÒ«ÎÄ
+//ä¸»å‡½æ•°--æ¢è€€æ–‡
 int main()
 {
 	cout << "=====================" << endl;
@@ -79,7 +78,7 @@ int main()
 	cout << "=====================" << endl;
 	system("pause");
 	play GAME;
-	string choice;//´æ·ÅÑ¡Ôñ½á¹û
+	string choice;//å­˜æ”¾é€‰æ‹©ç»“æœ
 	while (1)
 	{
 		GAME.gameMenu();
@@ -92,7 +91,7 @@ int main()
 				system("pause");
 				break;
 			case '2':
-				GAME.showRank();//ÏÔÊ¾ÅÅĞĞ°ñ
+				GAME.showRank();//æ˜¾ç¤ºæ’è¡Œæ¦œ
 				system("pause");
 				break;
 			case '3':
@@ -111,13 +110,13 @@ int main()
 	}
 	return 0;
 }
-//¹¹Ôìº¯Êı--¶ÁÈ¡ÅÅĞĞ°ñÎÄ¼ş ÍõÕñÓî
+//æ„é€ å‡½æ•°--è¯»å–æ’è¡Œæ¦œæ–‡ä»¶ ç‹æŒ¯å®‡
 g2048::g2048()
 {
 	readranking();
 
 }
-//¶ÁÈ¡ÅÅĞĞ°ñ--ÍõÕñÓî
+//è¯»å–æ’è¡Œæ¦œ--ç‹æŒ¯å®‡
 void g2048::readranking()
 {
 	ifstream ifile(rankURL);
@@ -126,7 +125,7 @@ void g2048::readranking()
 		ofstream ofile(rankURL);
 		if (!ofile)
 		{
-			cout << "ÅÅĞĞ°ñÊı¾İ¶ÁÈ¡Ê§°Ü£¡" << endl;
+			cout << "æ’è¡Œæ¦œæ•°æ®è¯»å–å¤±è´¥ï¼" << endl;
 			return;
 		}
 		ofile.close();
@@ -144,17 +143,17 @@ void g2048::readranking()
 	}
 	ifile.close();
 }
-//ÏÔÊ¾ÅÅĞĞ°ñ--ÍõÕñÓî
+//æ˜¾ç¤ºæ’è¡Œæ¦œ--ç‹æŒ¯å®‡
 void g2048::showranking()
 {
 	system("cls");
 	cout << "TOP " << RankSize << endl;
 	for (int i = 0; i < rank_len; i++)
 	{
-		printf("µÚ%dÃû£º%d\n", i + 1, ranking_list[i]);
+		printf("ç¬¬%dåï¼š%d\n", i + 1, ranking_list[i]);
 	}
 }
-//Ğ´ÈëÅÅĞĞ°ñ--ÍõÕñÓî
+//å†™å…¥æ’è¡Œæ¦œ--ç‹æŒ¯å®‡
 void g2048::writeranking()
 {
 	if (score == 0)
@@ -188,7 +187,7 @@ void g2048::writeranking()
 			}
 			else
 			{
-				break;//ÕÒµ½ºÏÊÊµÄÎ»ÖÃºóÍË³öÑ­»·
+				break;//æ‰¾åˆ°åˆé€‚çš„ä½ç½®åé€€å‡ºå¾ªç¯
 			}
 		}
 		ranking_list[t + 1] = score;
@@ -201,22 +200,22 @@ void g2048::writeranking()
 	ofile << ranking_list[rank_len - 1];
 	ofile.close();
 }
-//ÏòÉÏ»¬¶¯--¼ÖÔóÔ´
+//å‘ä¸Šæ»‘åŠ¨--è´¾æ³½æº
 void g2048::up()
 {
-	//Ïû³ı
+	//æ¶ˆé™¤
 	for (int j = 0; j < BoardSize; j++)
 		for (int i = 0; i < BoardSize - 1; i++)
 		{
 			if (board[i][j] != 0)
 			{
 				int k;
-				for (k = i + 1; k < BoardSize && board[k][j] == 0; k++)//Ëø¶¨¸ÃÁĞµÄÏÂÒ»¸ö·ÇÁãÊı
+				for (k = i + 1; k < BoardSize && board[k][j] == 0; k++)//é”å®šè¯¥åˆ—çš„ä¸‹ä¸€ä¸ªéé›¶æ•°
 					continue;
 
-				if (k >= BoardSize)//Èç¹ûÃ»ÓĞ¾ÍÌø³ö¸ÃÁĞµ½ÏÂÒ»ÁĞ
+				if (k >= BoardSize)//å¦‚æœæ²¡æœ‰å°±è·³å‡ºè¯¥åˆ—åˆ°ä¸‹ä¸€åˆ—
 					break;
-				else if (board[i][j] == board[k][j])//Èç¹û´æÔÚÇÒ¶şÕßÏàµÈ¾ÍºÏ²¢£¬´ÓÏÂÒ»ĞĞ¿ªÊ¼¼ì²é
+				else if (board[i][j] == board[k][j])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ç›¸ç­‰å°±åˆå¹¶ï¼Œä»ä¸‹ä¸€è¡Œå¼€å§‹æ£€æŸ¥
 				{
 					board[i][j] += board[k][j];
 					score += board[i][j];
@@ -228,15 +227,15 @@ void g2048::up()
 					eliminationLevel++;
 					zeroNum++;
 				}
-				else if (board[i][j] != board[k][j])//Èç¹û´æÔÚÇÒ¶şÕß²»µÈ£¬Ôò´ÓºóÕß¿ªÊ¼ÖØĞÂ¼ì²é
+				else if (board[i][j] != board[k][j])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ä¸ç­‰ï¼Œåˆ™ä»åè€…å¼€å§‹é‡æ–°æ£€æŸ¥
 					i = k - 1;
 			}
 		}
-	//ÒÆ¶¯
+	//ç§»åŠ¨
 	for (int j = 0; j < BoardSize; j++)
 	{
 		int i = 0, k = 0;
-		while (k < BoardSize && board[k][j]) k++;//ÕÒµ½µÚÒ»¸ö¿ÕÎ»
+		while (k < BoardSize && board[k][j]) k++;//æ‰¾åˆ°ç¬¬ä¸€ä¸ªç©ºä½
 		for (int i = k + 1; i < BoardSize; i++)
 		{
 			if (board[i][j] != 0)
@@ -256,22 +255,22 @@ void g2048::up()
 		eliminationLevel = 0;
 	}
 }
-//ÏòÏÂ»¬¶¯--¼ÖÔóÔ´
+//å‘ä¸‹æ»‘åŠ¨--è´¾æ³½æº
 void g2048::down()
 {
-	//Ïû³ı
+	//æ¶ˆé™¤
 	for (int j = 0; j < BoardSize; j++)
 		for (int i = BoardSize - 1; i > 0; i--)
 		{
 			if (board[i][j] != 0)
 			{
 				int k;
-				for (k = i - 1; k >= 0 && board[k][j] == 0; k--)//Ëø¶¨¸ÃÁĞµÄÏÂÒ»¸ö·ÇÁãÊı
+				for (k = i - 1; k >= 0 && board[k][j] == 0; k--)//é”å®šè¯¥åˆ—çš„ä¸‹ä¸€ä¸ªéé›¶æ•°
 					continue;
 
-				if (k < 0)//Èç¹ûÃ»ÓĞ¾ÍÌø³ö¸ÃÁĞµ½ÏÂÒ»ÁĞ
+				if (k < 0)//å¦‚æœæ²¡æœ‰å°±è·³å‡ºè¯¥åˆ—åˆ°ä¸‹ä¸€åˆ—
 					break;
-				else if (board[i][j] == board[k][j])//Èç¹û´æÔÚÇÒ¶şÕßÏàµÈ¾ÍºÏ²¢£¬´ÓÏÂÒ»ĞĞ¿ªÊ¼¼ì²é
+				else if (board[i][j] == board[k][j])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ç›¸ç­‰å°±åˆå¹¶ï¼Œä»ä¸‹ä¸€è¡Œå¼€å§‹æ£€æŸ¥
 				{
 					board[i][j] += board[k][j];
 					score += board[i][j];
@@ -283,15 +282,15 @@ void g2048::down()
 					eliminationLevel++;
 					zeroNum++;
 				}
-				else if (board[i][j] != board[k][j])//Èç¹û´æÔÚÇÒ¶şÕß²»µÈ£¬Ôò´ÓºóÕß¿ªÊ¼ÖØĞÂ¼ì²é
+				else if (board[i][j] != board[k][j])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ä¸ç­‰ï¼Œåˆ™ä»åè€…å¼€å§‹é‡æ–°æ£€æŸ¥
 					i = k + 1;
 			}
 		}
-	//ÒÆ¶¯
+	//ç§»åŠ¨
 	for (int j = 0; j < BoardSize; j++)
 	{
 		int i = BoardSize - 1, k = BoardSize - 1;
-		while (k >= 0 && board[k][j]) k--;//ÕÒµ½µÚÒ»¸ö¿ÕÎ»
+		while (k >= 0 && board[k][j]) k--;//æ‰¾åˆ°ç¬¬ä¸€ä¸ªç©ºä½
 		for (int i = k - 1; i >= 0; i--)
 		{
 			if (board[i][j] != 0)
@@ -311,22 +310,22 @@ void g2048::down()
 		eliminationLevel = 0;
 	}
 }
-//Ïò×ó»¬¶¯--¼ÖÔóÔ´
+//å‘å·¦æ»‘åŠ¨--è´¾æ³½æº
 void g2048::left()
 {
-	//Ïû³ı
+	//æ¶ˆé™¤
 	for (int i = 0; i < BoardSize; i++)
 		for (int j = 0; j < BoardSize - 1; j++)
 		{
 			if (board[i][j] != 0)
 			{
 				int k;
-				for (k = j + 1; k < BoardSize && board[i][k] == 0; k++)//Ëø¶¨¸ÃÁĞµÄÏÂÒ»¸ö·ÇÁãÊı
+				for (k = j + 1; k < BoardSize && board[i][k] == 0; k++)//é”å®šè¯¥åˆ—çš„ä¸‹ä¸€ä¸ªéé›¶æ•°
 					continue;
 
-				if (k >= BoardSize)//Èç¹ûÃ»ÓĞ¾ÍÌø³ö¸ÃÁĞµ½ÏÂÒ»ÁĞ
+				if (k >= BoardSize)//å¦‚æœæ²¡æœ‰å°±è·³å‡ºè¯¥åˆ—åˆ°ä¸‹ä¸€åˆ—
 					break;
-				else if (board[i][j] == board[i][k])//Èç¹û´æÔÚÇÒ¶şÕßÏàµÈ¾ÍºÏ²¢£¬´ÓÏÂÒ»ĞĞ¿ªÊ¼¼ì²é
+				else if (board[i][j] == board[i][k])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ç›¸ç­‰å°±åˆå¹¶ï¼Œä»ä¸‹ä¸€è¡Œå¼€å§‹æ£€æŸ¥
 				{
 					board[i][j] += board[i][k];
 					score += board[i][j];
@@ -338,15 +337,15 @@ void g2048::left()
 					eliminationLevel++;
 					zeroNum++;
 				}
-				else if (board[i][j] != board[i][k])//Èç¹û´æÔÚÇÒ¶şÕß²»µÈ£¬Ôò´ÓºóÕß¿ªÊ¼ÖØĞÂ¼ì²é
+				else if (board[i][j] != board[i][k])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ä¸ç­‰ï¼Œåˆ™ä»åè€…å¼€å§‹é‡æ–°æ£€æŸ¥
 					j = k - 1;
 			}
 		}
-	//ÒÆ¶¯
+	//ç§»åŠ¨
 	for (int i = 0; i < BoardSize; i++)
 	{
 		int j = 0, k = 0;
-		while (k < BoardSize && board[i][k]) k++;//ÕÒµ½µÚÒ»¸ö¿ÕÎ»
+		while (k < BoardSize && board[i][k]) k++;//æ‰¾åˆ°ç¬¬ä¸€ä¸ªç©ºä½
 		for (int j = k + 1; j < BoardSize; j++)
 		{
 			if (board[i][j] != 0)
@@ -366,22 +365,22 @@ void g2048::left()
 		eliminationLevel = 0;
 	}
 }
-//ÏòÓÒ»¬¶¯--¼ÖÔóÔ´
+//å‘å³æ»‘åŠ¨--è´¾æ³½æº
 void g2048::right()
 {
-	//Ïû³ı
+	//æ¶ˆé™¤
 	for (int i = 0; i < BoardSize; i++)
 		for (int j = BoardSize - 1; j > 0; j--)
 		{
 			if (board[i][j] != 0)
 			{
 				int k;
-				for (k = j - 1; k >= 0 && board[i][k] == 0; k--)//Ëø¶¨¸ÃÁĞµÄÏÂÒ»¸ö·ÇÁãÊı
+				for (k = j - 1; k >= 0 && board[i][k] == 0; k--)//é”å®šè¯¥åˆ—çš„ä¸‹ä¸€ä¸ªéé›¶æ•°
 					continue;
 
-				if (k < 0)//Èç¹ûÃ»ÓĞ¾ÍÌø³ö¸ÃÁĞµ½ÏÂÒ»ÁĞ
+				if (k < 0)//å¦‚æœæ²¡æœ‰å°±è·³å‡ºè¯¥åˆ—åˆ°ä¸‹ä¸€åˆ—
 					break;
-				else if (board[i][j] == board[i][k])//Èç¹û´æÔÚÇÒ¶şÕßÏàµÈ¾ÍºÏ²¢£¬´ÓÏÂÒ»ĞĞ¿ªÊ¼¼ì²é
+				else if (board[i][j] == board[i][k])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ç›¸ç­‰å°±åˆå¹¶ï¼Œä»ä¸‹ä¸€è¡Œå¼€å§‹æ£€æŸ¥
 				{
 					board[i][j] += board[i][k];
 					score += board[i][j];
@@ -393,15 +392,15 @@ void g2048::right()
 					eliminationLevel++;
 					zeroNum++;
 				}
-				else if (board[i][j] != board[i][k])//Èç¹û´æÔÚÇÒ¶şÕß²»µÈ£¬Ôò´ÓºóÕß¿ªÊ¼ÖØĞÂ¼ì²é
+				else if (board[i][j] != board[i][k])//å¦‚æœå­˜åœ¨ä¸”äºŒè€…ä¸ç­‰ï¼Œåˆ™ä»åè€…å¼€å§‹é‡æ–°æ£€æŸ¥
 					j = k + 1;
 			}
 		}
-	//ÒÆ¶¯
+	//ç§»åŠ¨
 	for (int i = 0; i < BoardSize; i++)
 	{
 		int j = BoardSize - 1, k = BoardSize - 1;
-		while (k >= 0 && board[i][k]) k--;//ÕÒµ½µÚÒ»¸ö¿ÕÎ»
+		while (k >= 0 && board[i][k]) k--;//æ‰¾åˆ°ç¬¬ä¸€ä¸ªç©ºä½
 		for (int j = k - 1; j >= 0; j--)
 		{
 			if (board[i][j] != 0)
@@ -421,7 +420,7 @@ void g2048::right()
 		eliminationLevel = 0;
 	}
 }
-//¿½±´ÆåÅÌ
+//æ‹·è´æ£‹ç›˜
 void g2048::copy()
 {
 	for (int i = 0; i < BoardSize; i++)
@@ -439,7 +438,7 @@ void g2048::copy()
 	tempPast[3] = tempNow[3];
 	tempNow[3] = zeroNum;
 }
-//»ØÍË²Ù×÷
+//å›é€€æ“ä½œ
 void g2048::goback()
 {
 	for (int i = 0; i < BoardSize; i++)
@@ -457,13 +456,13 @@ void g2048::goback()
 	tempNow[3] = tempPast[3];
 	zeroNum = tempNow[3];
 }
-//ÖØÖÃ±êÊ¶Î»--¼ÖÔóÔ´
+//é‡ç½®æ ‡è¯†ä½--è´¾æ³½æº
 void g2048::resetMark()
 {
-	isEliminated = false;//ÎŞÏû³ı
-	isMoved = false;//ÎŞÒÆ¶¯
+	isEliminated = false;//æ— æ¶ˆé™¤
+	isMoved = false;//æ— ç§»åŠ¨
 }
-//ÆåÅÌ¿ÉÒÆ¶¯¼ì²é--ÍõÕñÓî
+//æ£‹ç›˜å¯ç§»åŠ¨æ£€æŸ¥--ç‹æŒ¯å®‡
 bool g2048::movable()
 {
 	if (zeroNum > 0)
@@ -480,12 +479,12 @@ bool g2048::movable()
 	}
 	return false;
 }
-//ÆåÅÌ¸Ä¶¯¼ì²é--¼ÖÔóÔ´
+//æ£‹ç›˜æ”¹åŠ¨æ£€æŸ¥--è´¾æ³½æº
 bool g2048::isChanged()
 {
 	return (isEliminated || isMoved);
 }
-//ÏÔÊ¾µ±Ç°ÆåÅÌ--¼ÖÔóÔ´
+//æ˜¾ç¤ºå½“å‰æ£‹ç›˜--è´¾æ³½æº
 void g2048::showBoard()
 {
 	cout << '+';
@@ -537,8 +536,9 @@ void g2048::showBoard()
 	cout << "zeroNum:" << zeroNum << endl;
 	cout << "maxNum:" << maxNum << endl;
 	cout << "score:" << score << endl;
+	cout << "allowback:" << allowback << endl;
 }
-//Ëæ»ú¿ÕÎ»²úÉúĞÂµÄ·½¿é--ÍõÕñÓî
+//éšæœºç©ºä½äº§ç”Ÿæ–°çš„æ–¹å—--ç‹æŒ¯å®‡
 bool g2048::nextNum()
 {
 	int rdmnum = 0, row = 0;
@@ -549,7 +549,7 @@ bool g2048::nextNum()
 	}
 	else if (!zeroNum)
 	{
-		cout << "ÎŞ·¨²úÉúĞÂµÄ·½¿é" << endl;
+		cout << "æ— æ³•äº§ç”Ÿæ–°çš„æ–¹å—" << endl;
 		return false;
 	}
 	zeroNum--;
@@ -577,7 +577,7 @@ bool g2048::nextNum()
 		}
 	}
 }
-//ÓÎÏ·ÖĞÖ¸ÁîµÄ¿ØÖÆ--ÍõÕñÓî
+//æ¸¸æˆä¸­æŒ‡ä»¤çš„æ§åˆ¶--ç‹æŒ¯å®‡
 bool g2048::input()
 {
 	string ss;
@@ -612,7 +612,7 @@ bool g2048::input()
 	}
 	return true;
 }
-//ÆåÅÌÇåÀí--¼ÖÔóÔ´
+//æ£‹ç›˜æ¸…ç†--è´¾æ³½æº
 void g2048::cleanBoard()
 {
 	for (int i = 0; i < BoardSize; i++)
@@ -635,17 +635,17 @@ void g2048::cleanBoard()
 	copy();
 	copy();
 }
-//ÓÎÏ·²Ëµ¥ÏÔÊ¾--ÁºÒ«ÎÄ
+//æ¸¸æˆèœå•æ˜¾ç¤º--æ¢è€€æ–‡
 void play::gameMenu()
 {
 	system("cls");
 	cout << "+-------------+" << endl;
-	cout << "| 1¡¢¿ªÊ¼ÓÎÏ· |" << endl;
-	cout << "| 2¡¢ÅÅĞĞ°ñ   |" << endl;
-	cout << "| 3¡¢ÍË³öÓÎÏ· |" << endl;
+	cout << "| 1ã€å¼€å§‹æ¸¸æˆ |" << endl;
+	cout << "| 2ã€æ’è¡Œæ¦œ   |" << endl;
+	cout << "| 3ã€é€€å‡ºæ¸¸æˆ |" << endl;
 	cout << "+-------------+" << endl;
 }
-//¿ØÖÆÕû¸öÓÎÏ·µÄ¹ı³Ì--ÁºÒ«ÎÄ
+//æ§åˆ¶æ•´ä¸ªæ¸¸æˆçš„è¿‡ç¨‹--æ¢è€€æ–‡
 void play::playGame()
 {
 	game.cleanBoard();
@@ -653,12 +653,12 @@ void play::playGame()
 	{
 		system("cls");
 		game.showBoard();
-		game.resetMark();//ÖØÖÃ¶ş¸ö±êÖ¾Î»
+		game.resetMark();//é‡ç½®äºŒä¸ªæ ‡å¿—ä½
 		if (game.input())
 		{
 			if (game.isChanged())
 			{
-				game.nextNum();//²úÉúÒ»¸öĞÂµÄ·½¿é
+				game.nextNum();//äº§ç”Ÿä¸€ä¸ªæ–°çš„æ–¹å—
 				if (!game.movable())
 				{
 					break;
